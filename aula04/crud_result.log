@@ -1,0 +1,25 @@
+=== Execucao iniciada em 2026-08-06 22:11:51 ===
+
+[1] Cadastrando veiculo 1 (Volvo FH 540)...
+Resposta: {"id":3,"placa":"KLL-9090","montadora":"Volvo","modelo":"FH 540","status":"DISPONIVEL"}
+Status HTTP: 201
+[OK] Veiculo 1 cadastrado com ID 3
+
+[2] Cadastrando veiculo 2 (Scania R450)...
+Resposta: {"id":4,"placa":"XYZ-1122","montadora":"Scania","modelo":"R450","status":"DISPONIVEL"}
+Status HTTP: 201
+[OK] Veiculo 2 cadastrado com ID 4
+
+[3] Atualizando veiculo ID 3 para status EM_ROTA...
+Resposta: {"mensagem":"Status atualizado com sucesso!","veiculo":{"id":3,"placa":"KLL-9090","montadora":"Volvo","modelo":"FH 540","status":"EM_ROTA"}}
+Status HTTP: 200
+[OK] Veiculo ID 3 atualizado com sucesso.
+
+[4] Deletando veiculo ID 4...
+Status HTTP: 200
+[OK] Veiculo ID 4 deletado com sucesso.
+
+=== Resumo ===
+Veiculo cadastrado e atualizado: ID 3
+Veiculo cadastrado e deletado:   ID 4
+=== Execucao finalizada em 2026-08-06 22:11:51 ===
