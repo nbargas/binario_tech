@@ -1,0 +1,172 @@
+===== ESTRUTURA DO PROJETO =====
+middlewares/:
+total 20
+drwxrwxr-x 2 arthur_bargas arthur_bargas 4096 Aug  7 22:10 .
+drwxrwxr-x 5 arthur_bargas arthur_bargas 4096 Aug  7 22:29 ..
+-rw-rw-r-- 1 arthur_bargas arthur_bargas  338 Aug  7 19:42 auth.js
+-rw-rw-r-- 1 arthur_bargas arthur_bargas  350 Aug  7 19:41 logger.js
+-rw-rw-r-- 1 arthur_bargas arthur_bargas  514 Aug  7 22:10 validaCnh.js
+
+routes/:
+total 16
+drwxrwxr-x 2 arthur_bargas arthur_bargas 4096 Aug  7 22:18 .
+drwxrwxr-x 5 arthur_bargas arthur_bargas 4096 Aug  7 22:29 ..
+-rw-rw-r-- 1 arthur_bargas arthur_bargas  913 Aug  7 19:49 manutencoes.js
+-rw-rw-r-- 1 arthur_bargas arthur_bargas  892 Aug  7 22:18 motoristas.js
+
+===== middlewares/validaCnh.js =====
+// middlewares/validaCnh.js
+
+function validaCnh(req, res, next) {
+  const { cnh } = req.body;
+
+  if (!cnh) {
+    return res.status(400).json({
+      erro: 'CNH obrigatória',
+      mensagem: 'O campo "cnh" deve ser informado no corpo da requisição.'
+    });
+  }
+
+  const regexCnh = /^\d{11}$/;
+
+  if (!regexCnh.test(cnh)) {
+    return res.status(400).json({
+      erro: 'CNH inválida',
+      mensagem: 'A CNH deve conter exatamente 11 dígitos numéricos.'
+    });
+  }
+
+  next();
+}
+
+module.exports = validaCnh;
+
+===== routes/motoristas.js =====
+const express = require('express');
+const router = express.Router();
+const validaCnh = require('../middlewares/validaCnh');
+
+let motoristas = [
+	{ id: 1,  nome: "Carlos Silva", cnh: "12345678900", categoria: "E", ativo: true },
+	{ id: 2,  nome: "Ana Pereira", cnh: "98765432100", categoria: "D", ativo: true },
+];
+
+// GET /api/v1/motoristas
+router.get('/', (req, res) => {
+	res.status(200).json(motoristas);
+});
+
+// POST /api/v1/motoristas (Com validacao inline)
+router.post('/', validaCnh, (req, res) => {
+	const { nome, cnh, categoria } = req.body;
+
+	if (!nome || !cnh || !categoria) {
+		return res.status(400).json({ erro: "Campos 'nome', 'cnh' e 'categoria' sao obrigatorios," });
+	}
+
+	const novoMotorista = {
+		id: motoristas.length + 1,
+		nome,
+		cnh,
+		categoria,
+		ativo: true
+	};
+
+	motoristas.push(novoMotorista);
+	res.status(201).json(novoMotorista);
+});
+
+module.exports = router; 
+
+===== routes/manutencoes.js =====
+const express = require('express');
+const router = express.Router();
+
+let manutencoes = [
+  { id: 1, caminhao: "Volvo FH 2020", descricao: "Troca de oleo", valor: 450.00, data: "2026-07-01" },
+  { id: 2, caminhao: "Scania R450", descricao: "Revisao de freios", valor: 890.50, data: "2026-07-15" },
+];
+
+// GET /api/v1/manutencoes
+router.get('/', (req, res) => {
+  res.status(200).json(manutencoes);
+});
+
+// POST /api/v1/manutencoes
+router.post('/', (req, res) => {
+  const { caminhao, descricao, valor, data } = req.body;
+
+  if (!caminhao || !descricao || !valor || !data) {
+    return res.status(400).json({ erro: "Campos 'caminhao', 'descricao', 'valor' e 'data' sao obrigatorios." });
+  }
+
+  const novaManutencao = {
+    id: manutencoes.length + 1,
+    caminhao,
+    descricao,
+    valor,
+    data,
+  };
+
+  manutencoes.push(novaManutencao);
+  res.status(201).json(novaManutencao);
+});
+
+module.exports = router;
+
+===== app.js =====
+const express = require('express');
+const cors = require('cors');
+const loggerMiddleware = require('./middlewares/logger');
+const authMiddleware = require('./middlewares/auth');
+const motoristasRouter = require('./routes/motoristas');
+const manutencoesRouter = require('./routes/manutencoes');
+
+const app = express();
+const PORT = 3000;
+
+// Middlewares Globais 
+app.use(cors());
+app.use(express.json());
+app.use(loggerMiddleware);
+
+//Rota Publica
+app.get('/api/v1/health', (req, res) => {
+	res.status(200).json({ status: "ONLINE", aplicacao: "Binario Tech API v2"
+	});
+});
+
+// Rotas Protegidas por Autenticacao
+app.use('/api/v1/motoristas', authMiddleware, motoristasRouter);
+app.use('/api/v1/manutencoes', authMiddleware, manutencoesRouter);
+
+// Middleware Global de Tratamento de Erros 404 (Rota nao encontrada)
+app.use((req, res) => {
+	res.status(404).json({ erro: "Endpoint nao encontrado no servidor binario Tech." });
+});
+
+app.listen(PORT, () => {
+	console.log(`[Binario Tech] Servidor de Middlewares ativo na porta ${PORT}`);
+});
+
+
+===== audit_seguranca.log =====
+===== Auditoria de Seguranca - 2026-08-07 22:25:31 =====
+
+--- Tentativas SEM chave de API ---
+
+>> Tentativa 1 (sem x-api-key)
+Status HTTP: 401
+
+>> Tentativa 2 (sem x-api-key)
+Status HTTP: 401
+
+>> Tentativa 3 (sem x-api-key)
+Status HTTP: 401
+
+--- Tentativa COM chave de API valida ---
+
+>> Tentativa 4 (com x-api-key valida)
+Status HTTP: 200
+
+===== Fim da auditoria =====

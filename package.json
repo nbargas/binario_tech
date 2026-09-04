@@ -1,15 +1,15 @@
 {
-	"name": "aula13",
+	"name": "aula11",
 	"version": "1.0.0",
-	"description": "Validação de Entrada e Tratamento e Tratamento de Erros - Binário Tech",
+	"description": "Introdução ao MongoDB e Mongoose ODM - Binário Tech",
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js"
 	},
 	"dependencies": {
-		"cors": "^2.8.5",
-		"express": "^4.19.2",
-		"express-validator": "^7.0.1"
+		"cors": "^2.8.6",
+		"dotenv": "^16.6.1",
+		"express": "^4.22.2",
+		"mongoose": "^8.24.4"
 	}
 }
-
