@@ -1,25 +1,23 @@
 #!/bin/bash
-echo "===================================================="
-echo " AUDITORIA DE AUTENTICAÇÃO JWT - AULA 14"
-echo "===================================================="
+PORT=3002
+BASE_URL="http://localhost:$PORT"
 
-echo -e "\n[1] Registrando novo Usuário Operador..."
-curl -s -X POST http://localhost:3000/api/v1/auth/register \
+echo "=== 1. Testando Registro de Usuário ==="
+curl -X POST "$BASE_URL/auth/registro" \
   -H "Content-Type: application/json" \
-  -d '{ "email": "operador@binariotech.com.br", "senha": "SenhaSegura123!", "perfil": "ADMIN" }' | jq .
+  -d '{"nome":"Arthur Bargas","email":"arthur@binariotech.com","senha":"senhaSegura123","perfil":"admin"}'
+echo -e "\n"
 
-echo -e "\n[2] Realizando Login e obtendo JWT..."
-LOGIN_RESP=$(curl -s -X POST http://localhost:3000/api/v1/auth/login \
+echo "=== 2. Testando Login e Obtendo Token ==="
+RESPONSE=$(curl -s -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{ "email": "operador@binariotech.com.br", "senha": "SenhaSegura123!" }')
+  -d '{"email":"arthur@binariotech.com","senha":"senhaSegura123"}')
 
-echo $LOGIN_RESP | jq .
+TOKEN=$(echo $RESPONSE | grep -o '"token":"[^"]*' | grep -o '[^"]*$')
+echo "Token recebido: $TOKEN"
+echo -e "\n"
 
-TOKEN=$(echo $LOGIN_RESP | jq -r '.token')
-
-echo -e "\n[3] Tentando acessar Rota Protegida SEM Token (Esperado HTTP 401)..."
-curl -s http://localhost:3000/api/v1/auth/perfil | jq .
-
-echo -e "\n[4] Acessando Rota Protegida COM Token JWT Válido (Esperado HTTP 200)..."
-curl -s http://localhost:3000/api/v1/auth/perfil \
-  -H "Authorization: Bearer $TOKEN" | jq .
+echo "=== 3. Acessando Rota Protegida com Token ==="
+curl -X GET "$BASE_URL/auth/perfil" \
+  -H "Authorization: Bearer $TOKEN"
+echo -e "\n"

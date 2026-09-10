@@ -5,7 +5,7 @@ const gerenciadorErros = require('./src/middlewares/gerenciadorErros');
 const checkContentType = require('./src/middlewares/checkContentType');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3002;
 
 app.use(cors());
 app.use(express.json());
