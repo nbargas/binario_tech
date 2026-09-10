@@ -1,0 +1,34 @@
+bruno.r+   82506  0.0  0.0 1015192 63600 pts/13  Sl   10:29   0:00 node server.js
+luis.he+   92260  0.0  0.0 1016432 63284 ?       Sl   10:52   0:00 node server.js
+ana.liv+   95571  0.0  0.1 1017700 67200 pts/28  Sl   11:03   0:00 node server.js
+eduarda+  104651  0.0  0.1 1070636 69560 pts/9   Sl   11:24   0:00 node iniciar-mongo-memoria.js
+eduarda+  104664  0.0  0.0 1010648 56660 ?       Ssl  11:24   0:00 /usr/bin/node /home/eduarda.kramer/binario_tech/aula11/node_modules/mongodb-memory-server-core/scripts/mongo_killer.js 104651 104663
+eduarda+  105031  0.0  0.1 1070724 69328 pts/9   Sl   11:25   0:00 node iniciar-mongo-memoria.js
+eduarda+  105044  0.0  0.0 1010632 56760 ?       Ssl  11:25   0:00 /usr/bin/node /home/eduarda.kramer/binario_tech/aula11/node_modules/mongodb-memory-server-core/scripts/mongo_killer.js 105031 105043
+ana.liv+  105374  0.0  0.1 1015680 66172 pts/28  Sl   11:26   0:00 node server.js
+eduarda+  105548  0.0  0.1 1070628 70024 pts/9   Sl   11:26   0:00 node iniciar-mongo-memoria.js
+eduarda+  105564  0.0  0.0 1010336 56676 ?       Ssl  11:26   0:00 /usr/bin/node /home/eduarda.kramer/binario_tech/aula11/node_modules/mongodb-memory-server-core/scripts/mongo_killer.js 105548 105563
+eduarda+  105635  0.0  0.1 1076776 82036 pts/9   Sl+  11:26   0:05 node server.js
+talyson+  106755  0.0  0.0 1015176 64696 pts/18  Sl+  11:30   0:00 node src/server.js
+julia.s+  106985  0.0  0.0 1014556 63724 pts/29  Sl   11:31   0:00 node server.js
+gabriel+  115010  0.0  0.0 1013804 61548 pts/11  Sl   12:37   0:00 node servidor_check.js
+myguel.+  115056  0.0  0.0 1013648 62304 pts/17  Sl   12:37   0:00 node servidor_check.js
+bruno.r+  115064  0.0  0.0 1013760 62164 pts/13  Sl   12:37   0:00 node servidor_check.js
+erick.s+  115082  0.0  0.0 1013804 61960 pts/6   Sl   12:37   0:00 node servidor_check.js
+murilo.+  115111  0.0  0.0 1015412 61076 pts/0   Sl   12:37   0:00 node servidor_check.js
+juliana+  115161  0.0  0.0 1015148 59488 pts/16  Sl   12:37   0:00 node servidor_check.js
+ana.liv+  115193  0.0  0.0 1014028 61544 pts/28  Sl   12:37   0:00 node servidor_check.js
+felipe.+  115274  0.0  0.0 1013756 62084 pts/22  Sl   12:37   0:00 node servidor_check.js
+maely.p+  115292  0.0  0.0 994140 51576 pts/32   Sl   12:37   0:00 node servidor_check.js
+daniel.+  115355  0.0  0.0 1013740 61900 pts/15  Sl   12:38   0:00 node servidor_check.js
+arthur.+  115709  0.0  0.0 1013776 62020 pts/14  Sl   12:38   0:00 node servidor_check.js
+luis.he+  115738  0.0  0.0 1014016 61920 pts/34  Sl   12:38   0:00 node servidor_check.js
+maria.e+  116255  0.0  0.0 1015276 59976 pts/5   Sl   12:40   0:00 node servidor_check.js
+murilo.+  116842  0.0  0.0 1013768 62112 pts/1   Sl   12:41   0:00 node servidor_check.js
+maria.m+  118417  0.0  0.0 1013508 60556 pts/20  Sl   12:46   0:00 node servidor_check.js
+lana.sa+  118819  0.0  0.0 1013736 62052 pts/26  Sl   12:48   0:00 node servidor_check.js
+kenzo.t+  121011  0.0  0.0 1015504 60092 pts/7   Sl   13:03   0:00 node servidor_check.js
+nicolla+  121279  0.0  0.0 1014380 60676 pts/10  Sl   13:04   0:00 node servidor_check.js
+nicolla+  121523  0.0  0.0 1014128 61076 pts/10  Sl   13:07   0:00 node servidor_check.js
+felipe.+  122535  0.0  0.0 1013840 62156 pts/25  Sl+  13:13   0:00 node servidor_check.js
+arthur.+  124306  0.0  0.0   6540  2520 pts/21   S+   13:30   0:00 grep node
