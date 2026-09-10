@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"name": "aula11",
 	"version": "1.0.0",
 	"description": "Introdução ao MongoDB e Mongoose ODM - Binário Tech",
@@ -12,4 +13,20 @@
 		"express": "^4.22.2",
 		"mongoose": "^8.24.4"
 	}
+=======
+  "name": "aula14",
+  "version": "1.0.0",
+  "description": "Autenticação JWT e Segurança de Senhas - Binário Tech",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+>>>>>>> 408d3e8 (feat: implementacao completa da aula 14 - autenticacao JWT e bcrypt)
 }
