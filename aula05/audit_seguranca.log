@@ -1,0 +1,19 @@
+===== Auditoria de Seguranca - 2026-08-07 22:25:31 =====
+
+--- Tentativas SEM chave de API ---
+
+>> Tentativa 1 (sem x-api-key)
+Status HTTP: 401
+
+>> Tentativa 2 (sem x-api-key)
+Status HTTP: 401
+
+>> Tentativa 3 (sem x-api-key)
+Status HTTP: 401
+
+--- Tentativa COM chave de API valida ---
+
+>> Tentativa 4 (com x-api-key valida)
+Status HTTP: 200
+
+===== Fim da auditoria =====
