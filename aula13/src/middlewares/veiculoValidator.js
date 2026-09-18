@@ -5,8 +5,7 @@ const regrasCadastroVeiculo = [
     .notEmpty().withMessage('A placa do veículo é obrigatória.')
     .isString().withMessage('A placa deve ser um texto.')
     .trim()
-    .isLength({ min: 7, max: 8 }).withMessage('A placa deve ter entre 7 e 8 caracteres.')
-    .customSanitizer(value => value.toUpperCase()),
+    .isLength({ min: 7, max: 8 }).withMessage('A placa deve ter entre 7 e 8 caracteres.'),
 
   body('chassi')
     .notEmpty().withMessage('O chassi é obrigatório.')
@@ -14,13 +13,7 @@ const regrasCadastroVeiculo = [
 
   body('capacidadeCargaKg')
     .notEmpty().withMessage('A capacidade de carga é obrigatória.')
-    .isFloat({ min: 100 }).withMessage('A capacidade de carga deve ser um número maior ou igual a 100 Kg.'),
-
-  body('anoFabricacao')
-    .optional()
-    .isInt({ min: 2000, max: new Date().getFullYear() })
-    .withMessage(`O ano de fabricação deve ser um número inteiro entre 2000 e ${new Date().getFullYear()}.`)
-    .toInt()
+    .isFloat({ min: 100 }).withMessage('A capacidade de carga deve ser um número maior ou igual a 100 Kg.')
 ];
 
 module.exports = { regrasCadastroVeiculo };

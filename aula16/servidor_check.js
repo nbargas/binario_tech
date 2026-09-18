@@ -1,20 +1,20 @@
 const express = require('express');
 const app = express();
-const PORT = 3002;
+const PORT = 3000;
 
 app.use(express.json());
 
 app.get('/api/v1/status-servidor', (req, res) => {
-        res.json({
-                status: "ONLINE",
-                ambiente: "Servidor Local de Prova - Binário Tech",
-                usuario: process.env.USER || "aluno",
-                dataCheck: new Date()
-        });
+  res.json({
+    status: "ONLINE",
+    ambiente: "Servidor Local de Prova - Binário Tech",
+    usuario: process.env.USER || "aluno",
+    dataCheck: new Date()
+  });
 });
 
-// Versão atualizada
 app.listen(PORT, () => {
-        console.log(`[Binário Tech] Servidor de Validação da Aula 16 ativo na porta (Versão atualizada) ${PORT}`);
-        });
+  console.log(`[Binário Tech] Servidor de Validação da Aula 16 ativo na porta ${PORT}`);
+});
 
+// Atualizacao para teste de pull - Aula 16
