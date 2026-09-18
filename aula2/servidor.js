@@ -24,6 +24,9 @@ app.get('/scania/info', (req, res) => {
 		unidades_conectadas: 1420
 	});
 });
+app.get('/vw/info', (req, res) => {
+  res.json({ montadora: "Volkswagen", pais: "Alemanha" });
+});
 
 app.listen(PORT,() => {
 	console.log(`Servidor rodando com sucesso na porta ${PORT}`);
