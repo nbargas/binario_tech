@@ -4,13 +4,11 @@ const authController = require('../controllers/authController');
 const autenticarToken = require('../middlewares/autenticarToken');
 const autorizarPerfil = require('../middlewares/autorizarPerfil');
 
-router.post('/register', authController.registrar);
+router.post('/register', authController.register);
 router.post('/login', authController.login);
-
-// Rota protegida padrão
 router.get('/perfil', autenticarToken, authController.perfil);
 
-// Rota do EXERCÍCIO 1: Protegida por Token + Middleware de Autorização por Perfil
-router.get('/admin', autenticarToken, autorizarPerfil(['ADMIN']), authController.adminOnly);
+// EXERCÍCIO 1: Rota protegida exclusiva para ADMIN
+router.get('/admin', autenticarToken, autorizarPerfil(['ADMIN']), authController.rotaAdmin);
 
 module.exports = router;
