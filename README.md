@@ -1,95 +1,79 @@
-Binario Tech - Desenvolvimento Web, APIs e Automação Backend
-Repositório central para armazenamento, documentação e versionamento dos projetos, exercícios práticos, microserviços em Node.js/Express, scripts de automação em Bash e manipulação avançada de dados desenvolvidos ao longo do programa Binario Tech.
+Este módulo integra o repositório central **Binario Tech** e documenta as práticas avançadas de persistência de processos, gestão de ecossistemas de produção com PM2, criação de scripts Bash executáveis e exportação de utilitários globais via `$PATH` no ambiente Linux.
 
-Sobre o Repositório
-Este espaço consolida a evolução prática em arquitetura de software backend, infraestrutura em ambiente Linux, construção de APIs RESTful e integração de sistemas. O objetivo principal é documentar a implementação de conceitos fundamentais e avançados de desenvolvimento, servindo como base de conhecimento e portfólio técnico.
+---
 
-Principais Objetivos do Projeto
-Construção e estruturação de APIs RESTful utilizando Node.js e Express.js
+## Sobre a Aula 19
 
-Automação de rotinas de infraestrutura e testes de rede via Shell Script/Bash
+A Aula 19 foca na automatização da infraestrutura backend e na garantia de alta disponibilidade de aplicações Node.js. Os exercícios práticos abrangem a configuração de arquivos de ecossistema para ambientes de produção, persistência de processos ativos e a construção de ferramentas de linha de comando (CLI) acessíveis globalmente pelo sistema operacional.
 
-Manipulação, parsing e extração de dados JSON no terminal com jq
+---
 
-Gerenciamento de variáveis de ambiente e configurações de dependências com NPM
+## Estrutura dos Exercícios e Versionamento
 
-Práticas de controle de versão, resolução de conflitos e fluxos de trabalho no Git/GitHub
+### Exercício 1: Persistência do PM2
+* **Descrição:** Construção da aplicação base em Node.js/Express e criação do script de automação (`salvar_pm2.sh`) responsável por salvar e restaurar a lista de processos ativos do PM2 (`pm2 save` / `pm2 resurrect`).
+* **Ficheiros:** `salvar_pm2.sh`, `server.js`, `package.json`
+* **Comando de Versionamento:**
+  ```bash
+  git add .
+  git commit -m "aula 19 - exercicio 1"
+  git push origin main
+Exercício 2: Ecossistema de Produção PM2
+Descrição: Elaboração do ficheiro de configuração ecosystem.config.js para padronizar variáveis de ambiente, logs e limites de memória da aplicação api-telemetria gerenciada pelo PM2.
 
-Tecnologias e Ferramentas
-Backend e Runtime
-Node.js - Ambiente de execução JavaScript no servidor
+Ficheiros: ecosystem.config.js
 
-Express.js - Framework para construção de roteamento e serviços HTTP
+Comando de Versionamento:
 
-NPM (Node Package Manager) - Gestão de pacotes e scripts do projeto
+Bash
+git add ecosystem.config.js
+git commit -m "aula 19 - exercicio 2"
+git push origin main
+Exercício 3: Utilitário Bash e Exportação Global
+Descrição: Refatoração do script de automação para o utilitário bargas, aplicação de permissões de execução (chmod +x) e exportação da diretoria para a variável de ambiente $PATH, viabilizando o disparo do comando bargas pm2 de qualquer diretório do sistema.
 
-Infraestrutura, CLI e Automação
-Bash / Shell Scripting - Scripts executáveis para testes e automação de tarefas
+Ficheiros: bargas
 
-cURL e HTTPie - Clientes HTTP em linha de comando para consumo de APIs
+Comando de Versionamento:
 
-jq - Processador JSON via terminal para extração e filtragem de dados
+Bash
+git add bargas
+git commit -m "aula 19 - exercicio 3"
+git push origin main
+Exercício 4: Documentação e Sincronização
+Descrição: Consolidação da documentação técnica no README.md da aula19, revisão do fluxo de entregas e sincronização final com o repositório remoto.
 
-netstat / ss - Diagnóstico de rede, verificação de portas e sockets ativos
+Ficheiros: README.md
 
-Versionamento e Ambiente
-Linux / Google Cloud Shell - Ambiente de desenvolvimento distribuído
+Comando de Versionamento:
 
-Git e GitHub - Controle de versão e gestão de repositório remoto
-
-Estrutura do Repositório
-Plaintext
-.
-├── aula01/                 # Introdução ao Linux, comandos de terminal e navegação CLI
-├── aula02/                 # Servidor Express, rotas HTTP (/status, /scania/info, /vw/info), 
-│                           # exportação de JSON e script de testes automatizados (testar_servidor.sh)
-├── aula03/                 # Gerenciamento de estado, middlewares e parâmetros de requisição
-├── aula04/                 # Persistência de dados e integração com serviços externos
-├── ...                     # Próximos módulos do programa de formação
-└── README.md               # Documentação principal e guia do repositório
-Guia de Instalação e Execução
+Bash
+git add README.md
+git commit -m "aula 19 - exercicio 4"
+git push origin main
+Guia de Execução e Testes
 Pré-requisitos
-Para executar qualquer um dos módulos do repositório localmente, certifique-se de possuir instalado:
+PM2 instalado globalmente (npm install -g pm2)
 
-Node.js (versão 18.x ou superior)
+Permissões de execução atribuídas ao script bargas (chmod +x bargas)
 
-Git
+Testando o Comando Global (bargas pm2)
+Para validar a execução do utilitário em qualquer diretório do sistema Linux:
 
-Utilitários do sistema: bash, curl, jq
+Bash
+# 1. Adicionar o diretório da aula19 à variável PATH da sessão atual
+export PATH="$PATH:/home/arthur.nunes/binario_tech/aula19"
 
-Passo a Passo
-Clone o repositório remoto:
-git clone https://github.com/nbargas/Binario_Tech.git
+# 2. Navegar para outro módulo do repositório (exemplo: aula16)
+cd ~/binario_tech/aula16
 
-Entre no diretório do projeto:
-cd Binario_Tech
-
-Acesse o módulo desejado (exemplo: aula02):
-cd aula02
-
-Instale as dependências necessárias do módulo:
-npm install
-
-Execute a aplicação principal:
-node servidor.js
-
-Testes e Automação
-Os módulos contam com scripts de automação em Bash para validação de endpoints e simulação de tráfego de rede.
-
-Executando Testes Automatizados (Exemplo Aula 02)
-Garanta que o servidor esteja em execução em um terminal.
-
-Em outra janela do terminal, conceda permissão de execução ao script:
-chmod +x testar_servidor.sh
-
-Execute a suíte de testes:
-./testar_servidor.sh
-
-O script realizará requisições sequenciais aos endpoints configurados, validando a disponibilidade do serviço e exibindo os registros de saída com timestamp em tempo real.
-
+# 3. Executar o comando global
+bargas pm2
 Autor
 Desenvolvido por Arthur Bargas
 
 GitHub: https://github.com/nbargas
 
 Repositório: https://github.com/nbargas/Binario_Tech
+
+
