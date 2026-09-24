@@ -7,15 +7,15 @@ Este repositório contém a documentação e os scripts dos exercícios realizad
 ## Histórico de Exercícios e Versionamento
 
 ### Exercício 1
-* Descrição: Criação e execução do script de persistência do PM2.
-* Ficheiros: salvar_pm2.sh
+* Descrição: Aplicação base e script de automação de processos PM2.
+* Ficheiros: server.js, package.json, salvar_pm2.sh
 * Comandos Git:
   ```bash
-  git add salvar_pm2.sh
+  git add .
   git commit -m "aula 19 - exercicio 1"
   git push origin main
 Exercício 2
-Descrição: Configuração do ecossistema do PM2 para gestão de processos em produção.
+Descrição: Configuração do ficheiro de ecossistema do PM2 em ambiente de produção.
 
 Ficheiros: ecosystem.config.js
 
@@ -26,7 +26,7 @@ git add ecosystem.config.js
 git commit -m "aula 19 - exercicio 2"
 git push origin main
 Exercício 3
-Descrição: Criação do comando bash global (bargas pm2) com permissões de execução e exportação para o PATH.
+Descrição: Criação do comando bash global (bargas pm2) com permissões de execução e inclusão no PATH.
 
 Ficheiros: bargas
 
@@ -37,7 +37,7 @@ git add bargas
 git commit -m "aula 19 - exercicio 3"
 git push origin main
 Exercício 4
-Descrição: Criação da documentação final no README.md e sincronização do projeto.
+Descrição: Criação da documentação final no README.md e sincronização do projeto no GitHub.
 
 Ficheiros: README.md
 
