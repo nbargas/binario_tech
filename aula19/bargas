@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$1" == "pm2" ]; then
+    echo "======================================"
+    echo " SALVANDO CONFIGURAÇÃO DO PM2 "
+    echo "======================================"
+    pm2 save
+else
+    echo "Uso correto: bargas pm2"
+fi
