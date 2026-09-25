@@ -1,177 +1,118 @@
-Guia de Resolucao - Exercicios Praticos de Middlewares, Rotas e Seguranca em Node.js
-Este documento contem o passo a passo detalhado para a resolucao dos exercicios praticos envolvendo a criacao e aplicacao de middlewares customizados, modularizacao de rotas, validacao de dados, tratamento de erros 404 e automacao de testes de seguranca com Shell Script.
+Guia de Resolucao - Exercicios Praticos de Manipulacao de Arquivos JSON, APIs REST e Scripts Shell
+Este documento contem o passo a passo detalhado para a resolucao dos exercicios praticos envolvendo consumo de rotas com HTTPie, filtragem e manipulacao de dados em arquivos JSON com jq, implementacao de operacoes de leitura e remocao persistentes em Node.js, e criacao de scripts Shell para reset de ambiente.
 
 Sumario
-Exercicio 01 - Verificacao de Rota Health e Logs de Middleware
+Exercicio 01 - Requisicao GET e Validacao com HTTPie
 
-Exercicio 02 - Criacao do Roteador de Manutencoes
+Exercicio 02 - Filtragem por Montadora com jq
 
-Exercicio 03 - Registro de Rota com Middleware de Autenticacao
+Exercicio 03 - Criacao de Rota de Filtro por Montadora
 
-Exercicio 04 - Criacao do Middleware de Validacao de CNH
+Exercicio 04 - Criacao de Rota DELETE com Persistencia
 
-Exercicio 05 - Aplicacao e Teste de Validacao de CNH
-
-Exercicio 06 - Teste de Middleware Global para Rotas Inexistentes (404)
-
-Exercicio 07 - Automacao de Testes de Seguranca via Shell Script
-
-Exercicio 08 - Encontrando e Encerrando o Processo da API
+Exercicio 05 - Script Shell de Limpeza de Ambiente
 
 Exercicio 01
-Objetivo: Efetuar uma requisicao GET na rota /health e verificar nos logs do terminal a mensagem gerada pelo loggerMiddleware.
+Objetivo: Efetuar uma requisicao GET na rota /api/v1/ocorrencias via httpie e validar se a resposta e um array contendo os registros do arquivo ocorrencias.json.
 
-Execucao no Terminal:
 Bash
-curl -s http://localhost:3000/health
-Verificacao: No terminal onde o servidor Node.js esta rodando, observe o log exibido pelo loggerMiddleware (exemplo: [LOG] GET /health - 2026-09-25T16:00:00.000Z).
+http GET http://localhost:3000/api/v1/ocorrencias
+Validacao: O retorno exibido no terminal deve ser um array JSON (iniciado por [) com os mesmos objetos cadastrados no arquivo ocorrencias.json.
 
 Exercicio 02
-Objetivo: Crie o arquivo routes/manutencoes.js para gerenciar orcamentos de manutencao dos caminhoes, com rotas para listar e cadastrar manutencoes.
+Objetivo: Utilizar o utilitario jq para ler o arquivo ocorrencias.json e filtrar apenas os registros da montadora "Scania".
 
-Codigo para routes/manutencoes.js:
-JavaScript
-const express = require('express');
-const router = express.Router();
+Bash
+jq '.[] | select(.montadora == "Scania")' ocorrencias.json
+.[]: Percorre cada elemento contido no array principal do arquivo.
 
-// Base de dados temporaria em memoria
-const manutencoes = [
-  { id: 1, caminhaoId: 1, descricao: 'Troca de oleo', valor: 850.00 }
-];
+select(.montadora == "Scania"): Filtra e exibe somente os objetos onde a chave montadora seja exatamente "Scania".
 
-// Rota GET - Listar manutencoes
-router.get('/', (req, res) => {
-  res.status(200).json(manutencoes);
-});
-
-// Rota POST - Cadastrar nova manutencao
-router.post('/', (req, res) => {
-  const { caminhaoId, descricao, valor } = req.body;
-
-  if (!caminhaoId || !descricao || !valor) {
-    return res.status(400).json({ erro: 'Todos os campos sao obrigatorios' });
-  }
-
-  const novaManutencao = {
-    id: manutencoes.length + 1,
-    caminhaoId,
-    descricao,
-    valor
-  };
-
-  manutencoes.push(novaManutencao);
-  res.status(201).json(novaManutencao);
-});
-
-module.exports = router;
 Exercicio 03
-Objetivo: Registrar o roteador de manutencoes no arquivo app.js (ou servidor.js) sob o caminho /api/v1/manutencoes, aplicando o authMiddleware.
+Objetivo: Adicionar uma rota GET /api/v1/ocorrencias/montadora/:nome na API para filtrar as ocorrencias salvas em arquivo de acordo com a montadora informada na URL.
 
-Trecho de codigo no arquivo principal (app.js / servidor.js):
+Codigo a ser adicionado no arquivo de rotas/servidor (ex: app.js ou servidor.js):
 JavaScript
-const manutencoesRouter = require('./routes/manutencoes');
-const authMiddleware = require('./middlewares/authMiddleware'); // Importacao do middleware de autenticacao
+const fs = require('fs');
+const path = require('path');
 
-// Registro da rota com protecao de autenticacao
-app.use('/api/v1/manutencoes', authMiddleware, manutencoesRouter);
-Exercicio 04
-Objetivo: Criar um middleware exclusivo de validacao de CNH em middlewares/validaCnh.js garantindo que a CNH possua exatamente 11 digitos numericos.
+const CAMINHO_ARQUIVO = path.join(__dirname, 'ocorrencias.json');
 
-Codigo para middlewares/validaCnh.js:
-JavaScript
-function validaCnh(req, res, next) {
-  const { cnh } = req.body;
+app.get('/api/v1/ocorrencias/montadora/:nome', (req, res) => {
+  const { nome } = req.params;
 
-  // Expressao regular para verificar se contem exatamente 11 digitos numericos
-  const regexCnh = /^\d{11}$/;
+  fs.readFile(CAMINHO_ARQUIVO, 'utf-8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ erro: 'Erro ao ler o arquivo de ocorrencias' });
+    }
 
-  if (!cnh || !regexCnh.test(cnh)) {
-    return res.status(400).json({
-      erro: 'CNH invalida. A CNH deve conter exatamente 11 digitos numericos.'
-    });
-  }
+    const ocorrencias = JSON.parse(data || '[]');
+    
+    // Filtra ignorando diferencas entre maiusculas e minusculas
+    const filtradas = ocorrencias.filter(
+      o => o.montadora.toLowerCase() === nome.toLowerCase()
+    );
 
-  next();
-}
-
-module.exports = validaCnh;
-Exercicio 05
-Objetivo: Aplicar o middleware validaCnh na rota POST de motoristas e testar o envio de uma CNH invalida via cURL.
-
-Passo 1: Aplicacao na rota em routes/motoristas.js
-JavaScript
-const validaCnh = require('../middlewares/validaCnh');
-
-router.post('/', validaCnh, (req, res) => {
-  // Lógica de cadastro do motorista
-  res.status(201).json({ mensagem: 'Motorista cadastrado com sucesso!' });
+    res.status(200).json(filtradas);
+  });
 });
-Passo 2: Teste via cURL enviando CNH invalida
+Exercicio 04
+Objetivo: Criar uma rota DELETE /api/v1/ocorrencias/:id que remove do arquivo JSON a ocorrencia correspondente ao ID informado.
+
+Codigo a ser adicionado no servidor Node.js:
+JavaScript
+app.delete('/api/v1/ocorrencias/:id', (req, res) => {
+  const { id } = req.params;
+
+  fs.readFile(CAMINHO_ARQUIVO, 'utf-8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ erro: 'Erro ao ler o arquivo de ocorrencias' });
+    }
+
+    let ocorrencias = JSON.parse(data || '[]');
+    const indice = ocorrencias.findIndex(o => o.id === parseInt(id));
+
+    if (indice === -1) {
+      return res.status(404).json({ erro: 'Ocorrencia nao encontrada' });
+    }
+
+    // Remove o item do array
+    ocorrencias.splice(indice, 1);
+
+    // Salva a lista atualizada de volta no arquivo JSON
+    fs.writeFile(CAMINHO_ARQUIVO, JSON.stringify(ocorrencias, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ erro: 'Erro ao salvar alteracoes no arquivo' });
+      }
+
+      res.status(200).json({ mensagem: `Ocorrencia com ID ${id} removida com sucesso` });
+    });
+  });
+});
+Exercicio 05
+Objetivo: Crie o script Bash limpar_dados.sh que encerra o processo Node.js e exclui o arquivo ocorrencias.json para resetar o ambiente de testes.
+
+Passo 1: Criar o arquivo limpar_dados.sh
 Bash
-curl -i -X POST http://localhost:3000/api/v1/motoristas \
-  -H "Content-Type: application/json" \
-  -d '{"nome": "Carlos Silva", "cnh": "123"}'
-Retorno esperado: Cabecalho HTTP/1.1 400 Bad Request com o objeto JSON contendo a mensagem de erro da CNH.
-
-Exercicio 06
-Objetivo: Fazer uma requisicao GET para uma rota inexistente (/api/v1/clientes) e confirmar o tratamento pelo middleware global de 404.
-
-Teste no terminal:
-Bash
-curl -i -s http://localhost:3000/api/v1/clientes
-Estrutura de resposta esperada:
-
-JSON
-HTTP/1.1 404 Not Found
-Content-Type: application/json
-
-{
-  "erro": "Rota nao encontrada",
-  "caminho": "/api/v1/clientes"
-}
-Exercicio 07
-Objetivo: Criar o script teste_seguranca.sh para simular 3 tentativas de acesso sem chave de API e 1 tentativa com chave valida, registrando a auditoria em audit_seguranca.log.
-
-Passo 1: Criar o script teste_seguranca.sh
-Bash
-cat << 'EOF' > teste_seguranca.sh
+cat << 'EOF' > limpar_dados.sh
 #!/bin/bash
 
-API_URL="http://localhost:3000/api/v1/manutencoes"
-CHAVE_VALIDA="minha_chave_secreta_123"
+echo "=== INICIANDO RESET DO AMBIENTE DE TESTES ==="
 
-echo "=== INICIANDO AUDITORIA DE SEGURANCA ==="
-date
+echo "1. Buscando e encerrando processos Node.js..."
+pkill -f "node" || echo "Nenhum processo Node.js ativo encontrado."
 
-echo -e "\n--- Tentativa 1 (Sem API Key) ---"
-curl -i -s $API_URL
+echo "2. Removendo arquivo de dados (ocorrencias.json)..."
+if [ -f "ocorrencias.json" ]; then
+    rm -f ocorrencias.json
+    echo "Arquivo ocorrencias.json removido com sucesso."
+else
+    echo "Arquivo ocorrencias.json nao existe."
+fi
 
-echo -e "\n--- Tentativa 2 (Sem API Key) ---"
-curl -i -s $API_URL
-
-echo -e "\n--- Tentativa 3 (Sem API Key) ---"
-curl -i -s $API_URL
-
-echo -e "\n--- Tentativa 4 (Com API Key Valida) ---"
-curl -i -s -H "x-api-key: $CHAVE_VALIDA" $API_URL
-
-echo -e "\n=== AUDITORIA FINALIZADA ==="
+echo "=== RESET CONCLUIDO ==="
 EOF
-Passo 2: Tornar o script executavel e rodar com redirecionamento de logs
+Passo 2: Dar permissao de execucao e rodar o script
 Bash
-chmod +x teste_seguranca.sh
-./teste_seguranca.sh > audit_seguranca.log 2>&1
-Exercicio 08
-Objetivo: Localizar o PID do processo Node.js e encerra-lo pelo terminal Linux.
-
-Passo 1: Localizar o processo
-Bash
-ps aux | grep node
-Identifique o número da coluna PID correspondente ao processo Node.js em execução.
-
-Passo 2: Encerrar o processo pelo PID
-Substitua <PID> pelo número correspondente encontrado no passo anterior (exemplo: 4567):
-
-Bash
-kill -9 4567
-kill -9: Força o encerramento imediato do processo selecionado no sistema operacional.
+chmod +x limpar_dados.sh
+./limpar_dados.sh
