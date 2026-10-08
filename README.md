@@ -1,79 +1,86 @@
-Este módulo integra o repositório central **Binario Tech** e documenta as práticas avançadas de persistência de processos, gestão de ecossistemas de produção com PM2, criação de scripts Bash executáveis e exportação de utilitários globais via `$PATH` no ambiente Linux.
+# Aula 23 - Orquestração de Containers com Docker Compose (Node.js + Redis)
+
+Este repositório contém a resolução prática da **Aula 23**, cobrindo a orquestração de uma API Express (`web-api`) integrada a um cache em memória (`redis-cache`) via Docker Compose.
 
 ---
 
-## Sobre a Aula 19
+## 🛠️ Arquitetura da Solução
 
-A Aula 19 foca na automatização da infraestrutura backend e na garantia de alta disponibilidade de aplicações Node.js. Os exercícios práticos abrangem a configuração de arquivos de ecossistema para ambientes de produção, persistência de processos ativos e a construção de ferramentas de linha de comando (CLI) acessíveis globalmente pelo sistema operacional.
+- **API Node.js (`web-api`):** Mapeada na porta do host `8084` para a porta interna `5000`.
+- **Servidor Redis (`redis-cache`):** Porta `6379`, operando em rede privada e persitindo dados.
+- **Rede Personalizada:** `rede-binario` (driver bridge).
+- **Volume Persistente:** `aula23_redis_data` para resiliência dos dados do Redis.
 
 ---
 
-## Estrutura dos Exercícios e Versionamento
+## 🚀 Passo a Passo dos Exercícios
 
-### Exercício 1: Persistência do PM2
-* **Descrição:** Construção da aplicação base em Node.js/Express e criação do script de automação (`salvar_pm2.sh`) responsável por salvar e restaurar a lista de processos ativos do PM2 (`pm2 save` / `pm2 resurrect`).
-* **Ficheiros:** `salvar_pm2.sh`, `server.js`, `package.json`
-* **Comando de Versionamento:**
-  ```bash
-  git add .
-  git commit -m "aula 19 - exercicio 1"
-  git push origin main
-Exercício 2: Ecossistema de Produção PM2
-Descrição: Elaboração do ficheiro de configuração ecosystem.config.js para padronizar variáveis de ambiente, logs e limites de memória da aplicação api-telemetria gerenciada pelo PM2.
+### **EXERCÍCIO 1: Adicionar Rota `DELETE /api/v1/visitas/reset`**
+**Objetivo:** Criar um endpoint HTTP DELETE para apagar a chave `contador_visitas` no Redis e resetar o contador.
 
-Ficheiros: ecosystem.config.js
-
-Comando de Versionamento:
-
-Bash
-git add ecosystem.config.js
-git commit -m "aula 19 - exercicio 2"
-git push origin main
-Exercício 3: Utilitário Bash e Exportação Global
-Descrição: Refatoração do script de automação para o utilitário bargas, aplicação de permissões de execução (chmod +x) e exportação da diretoria para a variável de ambiente $PATH, viabilizando o disparo do comando bargas pm2 de qualquer diretório do sistema.
-
-Ficheiros: bargas
-
-Comando de Versionamento:
+1. Atualizar o ficheiro `server.js` adicionando a rota de eliminação da chave:
+   ```javascript
+   app.delete('/api/v1/visitas/reset', async (req, res) => {
+     try {
+       await client.del('contador_visitas');
+       res.json({
+         status: "SUCESSO",
+         mensagem: "Contador de visitas zerado com sucesso no Redis!",
+         totalVisitas: 0,
+         timestamp: new Date()
+       });
+     } catch (error) {
+       res.status(500).json({ status: "ERRO", mensagem: error.message });
+     }
+   });
+Recompilar e reiniciar o container do serviço web-api:
 
 Bash
-git add bargas
-git commit -m "aula 19 - exercicio 3"
-git push origin main
-Exercício 4: Documentação e Sincronização
-Descrição: Consolidação da documentação técnica no README.md da aula19, revisão do fluxo de entregas e sincronização final com o repositório remoto.
-
-Ficheiros: README.md
-
-Comando de Versionamento:
+docker compose up -d --build web-api
+Testar a rota de reset via curl:
 
 Bash
-git add README.md
-git commit -m "aula 19 - exercicio 4"
-git push origin main
-Guia de Execução e Testes
-Pré-requisitos
-PM2 instalado globalmente (npm install -g pm2)
-
-Permissões de execução atribuídas ao script bargas (chmod +x bargas)
-
-Testando o Comando Global (bargas pm2)
-Para validar a execução do utilitário em qualquer diretório do sistema Linux:
+curl -s -X DELETE http://localhost:8084/api/v1/visitas/reset | jq .
+Confirmar a reinicialização da contagem executando a rota GET:
 
 Bash
-# 1. Adicionar o diretório da aula19 à variável PATH da sessão atual
-export PATH="$PATH:/home/arthur.nunes/binario_tech/aula19"
+curl -s http://localhost:8084/api/v1/visitas | jq .
+EXERCÍCIO 2: Inspecionar o Volume do Redis
+Objetivo: Localizar o ponto de montagem (Mountpoint) do volume gerenciado pelo Docker no host Linux.
 
-# 2. Navegar para outro módulo do repositório (exemplo: aula16)
-cd ~/binario_tech/aula16
+Executar a inspeção detalhada do volume aula23_redis_data:
 
-# 3. Executar o comando global
-bargas pm2
-Autor
-Desenvolvido por Arthur Bargas
+Bash
+docker volume inspect aula23_redis_data
+Extrair diretamente o caminho no sistema de arquivos do host:
 
-GitHub: https://github.com/nbargas
+Bash
+docker volume inspect aula23_redis_data --format '{{ .Mountpoint }}'
+Caminho identificado: /var/lib/docker/volumes/aula23_redis_data/_data
 
-Repositório: https://github.com/nbargas/Binario_Tech
+EXERCÍCIO 3: Script de Logs Unificados (logs_unificados.sh)
+Objetivo: Criar um script Bash para monitorizar em tempo real os logs combinados da API e do Redis.
 
+Criar o ficheiro do script logs_unificados.sh:
+
+Bash
+cat << 'EOSH' > logs_unificados.sh
+#!/bin/bash
+echo ""
+echo "=================================================="
+echo "   MONITORAMENTO DE LOGS UNIFICADOS - AULA 23"
+echo "=================================================="
+echo ""
+
+docker compose logs -f --tail=20
+EOSH
+Conceder permissão de execução ao script:
+
+Bash
+chmod +x logs_unificados.sh
+Executar o script de monitorização:
+
+Bash
+./logs_unificados.sh
+(Pressione Ctrl + C para encerrar o acompanhamento dos logs).
 
