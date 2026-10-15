@@ -1,0 +1,67 @@
+==================================================
+      AUTOMAÇÃO DE TESTES CRUD - FROTA API
+      Data/Hora: qui 15 out 2026 14:05:48 -03
+==================================================
+
+--- 1. Cadastrando Veículo 1 (Volvo FH 540) via POST ---
+{
+  "id": 3,
+  "placa": "FH540X",
+  "montadora": "Volvo",
+  "modelo": "FH 540",
+  "status": "DISPONIVEL"
+}
+
+--- 2. Cadastrando Veículo 2 via POST ---
+{
+  "id": 4,
+  "placa": "ABC1234",
+  "montadora": "Fiat",
+  "modelo": "Uno",
+  "status": "DISPONIVEL"
+}
+
+--- 3. Consultando veículos com status DISPONIVEL via GET ---
+[
+  {
+    "id": 3,
+    "placa": "FH540X",
+    "montadora": "Volvo",
+    "modelo": "FH 540",
+    "status": "DISPONIVEL"
+  },
+  {
+    "id": 4,
+    "placa": "ABC1234",
+    "montadora": "Fiat",
+    "modelo": "Uno",
+    "status": "DISPONIVEL"
+  }
+]
+
+--- 4. Atualização parcial de status via PATCH (ID: 1) ---
+jq: parse error: Invalid numeric literal at line 1, column 10
+
+--- 5. Substituição completa via PUT (ID: 2) ---
+{
+  "id": 2,
+  "placa": "XYZ9876",
+  "montadora": "Chevrolet",
+  "modelo": "Onix",
+  "status": "DISPONIVEL"
+}
+
+--- 6. Remoção de 1 veículo via DELETE (ID: 1) ---
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 53
+ETag: W/"35-H2PuteLFoF/0Uu7DB0d7UwkKv+c"
+Date: Thu, 15 Oct 2026 17:05:48 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"mensagem":"Veiculo ID $(id) removido com sucesso."}
+==================================================
+          FIM DA EXECUÇÃO DOS TESTES
+==================================================
