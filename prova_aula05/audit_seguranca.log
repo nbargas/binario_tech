@@ -1,0 +1,113 @@
+==========================================
+    AUDITORIA DE SEGURANCA - BINARIO TECH 
+==========================================
+
+1. Testando acesso sem header X-API-KEY (deve retornar 401)...
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 62
+ETag: W/"3e-nVhwxEF/vyGaJeoy1qMX4nNzEeM"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Não autorizado: Chave de API inválida ou ausente."}
+------------------------------------------
+
+2. Testando acesso com chave invalida (deve retornar 401)...
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 62
+ETag: W/"3e-nVhwxEF/vyGaJeoy1qMX4nNzEeM"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Não autorizado: Chave de API inválida ou ausente."}
+------------------------------------------
+
+3. Testando cadastro com CNH invalida (deve retornar 400)...
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 75
+ETag: W/"4b-Wt3gbcgt4M7re2yeJp1eqXKtvdg"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"CNH invalida. A CNH deve conter exatamente 11 digitos numericos."}
+------------------------------------------
+
+4. Testando acesso a rota inexistente /api/v1/clientes (deve retornar 404)...
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 59
+ETag: W/"3b-v5z8Bu+xdn904zIx66GUlUZfwXk"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Rota nao encontrada","caminho":"/api/v1/clientes"}
+------------------------------------------
+
+5. Testando consultas e cadastros bem-sucedidos (200 / 201)...
+-> GET /motoristas:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 2
+ETag: W/"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+[]
+
+-> POST /motoristas:
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 111
+ETag: W/"6f-4Xy88BSV0211h8c1vpFRqULTGAg"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"mensagem":"Motorista cadastrado com sucesso!","motorista":{"id":1,"nome":"Carlos Silva","cnh":"12345678901"}}
+
+-> GET /manutencoes:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 83
+ETag: W/"53-7IvvarGtepsJteoHb4PBlwL2KgU"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+[{"id":1,"caminhaoId":1,"placa":"ABC1D23","descricao":"Troca de oleo","valor":850}]
+
+-> POST /manutencoes:
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 145
+ETag: W/"91-p8ly9IMkkv170lHgOQ2lJZopmC4"
+Date: Thu, 22 Oct 2026 13:37:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"mensagem":"Manutencao cadastrada com sucesso!","manutencao":{"id":2,"placa":"ABC1D23","caminhaoId":1,"descricao":"Troca de óleo","valor":450}}
+==========================================
